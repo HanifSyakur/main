@@ -1,0 +1,94 @@
+import discord, random
+from discord.ext import commands
+from bot_features import gen_pass, flip_coin, gen_emodji
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'We have logged in as {bot.user}')
+
+@bot.command()
+async def hello(ctx):
+    """Greets the user."""
+    await ctx.send(f'Hi! I am a bot {bot.user}! I can do many things! Type $features to see what I can do!')
+
+@bot.command()
+async def features(ctx):
+    """Shows the available commands."""
+    await ctx.send("Here are the commands I can do:\n"
+                   "$hello - I will greet you!\n"
+                   "$features - I will show you what I can do!\n"
+                   "$heh - Say 'he' a number of times!\n"
+                   "$password - Generate a random password!\n"
+                   "$coinflip - Flip a coin!\n"
+                   "$emoji - Generate a random emoji!\n"
+                   "$add - Add two numbers together!\n"
+                   "$subtract - Subtract two numbers together!\n"
+                   "$multiply - Multiply two numbers together!\n"
+                   "$divide - Divide two numbers together!\n"
+                   "$roll - Roll a dice in NdN format!\n"
+                   "$repeat - Repeat a message multiple times!")
+
+@bot.command()
+async def heh(ctx, count_heh = 5):
+    """Says 'he' a number of times."""
+    await ctx.send("he" * count_heh)
+
+@bot.command()
+async def password(ctx, pass_length = 10):
+    """Generates a random password."""
+    await ctx.send("Your password is: " + gen_pass(pass_length))
+
+@bot.command()
+async def coinflip(ctx):
+    """Flips a coin."""
+    await ctx.send("The coin landed on: " + flip_coin())
+
+@bot.command()
+async def emoji(ctx):
+    """Generates a random emoji."""
+    await ctx.send(gen_emodji())
+
+@bot.command()
+async def add(ctx, left: int, right: int):
+    """Adds two numbers together."""
+    await ctx.send(left + right)
+
+@bot.command()
+async def subtract(ctx, left: int, right: int):
+    """Subtracts two numbers together."""
+    await ctx.send(left - right)
+
+@bot.command()
+async def multiply(ctx, left: int, right: int):
+    """Multiplies two numbers together."""
+    await ctx.send(left * right)
+
+@bot.command()
+async def divide(ctx, left: int, right: int):
+    """Divides two numbers together."""
+    await ctx.send(left / right)
+
+@bot.command()
+async def roll(ctx, dice: str):
+    """Rolls a dice in NdN format."""
+    try:
+        rolls, limit = map(int, dice.split('d'))
+    except Exception:
+        await ctx.send('Format has to be in NdN! Example: 2d20 rolls two 20 sided dice.')
+        return
+
+    result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
+    await ctx.send(result)
+
+@bot.command()
+async def repeat(ctx, times: int, content='repeating...'):
+    """Repeats a message multiple times."""
+    for i in range(times):
+        await ctx.send(content)
+
+bot.run("put da ID Bot thing here")
