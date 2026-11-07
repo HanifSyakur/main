@@ -1,6 +1,6 @@
 import discord, random, os, requests
 from discord.ext import commands
-from bot_features import gen_pass, flip_coin, gen_emodji
+from bot_features import gen_pass, flip_coin, gen_emodji, recycle_tips1, get_waste_type
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -53,7 +53,9 @@ async def features(ctx):
                    "$repeat - Repeat a message multiple times!\n"
                    "$duck - Get a random duck image!\n"
                    "$cat - Get a random cat image!\n"
-                   "$fox - Get a random fox image!")
+                   "$fox - Get a random fox image!\n"
+                   "$recycle_tips - Get tips for recycling and sustainability!\n"
+                   "$waste_type - Determine if the given waste is recyclable or non-recyclable!")
 
 @bot.command()
 async def heh(ctx, count_heh = 5):
@@ -137,5 +139,17 @@ async def fox(ctx):
     '''Setelah kita memanggil perintah rubah, program akan memanggil fungsi get_fox_image_url'''
     fox_url = get_fox_image_url()
     await ctx.send(fox_url)
+
+@bot.command()
+async def recycle_tips(ctx, how_many:int=2):
+    all_tips = recycle_tips1(how_many)
+    sent_tips = "\n".join(all_tips)
+    await ctx.send(sent_tips)
+
+@bot.command()
+async def waste_type(ctx, *, waste: str):
+    """Determines if the given waste is recyclable or non-recyclable."""
+    type_waste = get_waste_type(waste)
+    await ctx.send(type_waste)
 
 bot.run("put da id bot thing here")
